@@ -1,28 +1,29 @@
 package org.tykfa90.microbloggingapp.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "accounts")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column
+
     private String login;
-    @Column
+
     private String password;
-    @Column
+
     private String displayName;
-    @Column
-    private Date creationDate;
-    @Column
-    private AccountVisibility visibility;
-    @Column
+
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
+    @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-    public Account() {
-    }
 
     public Long getId() {
         return id;
@@ -56,20 +57,8 @@ public class Account {
         this.displayName = displayName;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public AccountVisibility getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(AccountVisibility visibility) {
-        this.visibility = visibility;
     }
 
     public AccountStatus getStatus() {
