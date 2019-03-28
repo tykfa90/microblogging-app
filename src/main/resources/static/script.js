@@ -1,15 +1,15 @@
 $("#button-register").click(function () {
-    const name = $("#uniqueName").val();
-    const email = $("#email").val();
-    const password = $("#inputPassword").val();
-    const confirmPassword = $("#inputPasswordConfirm").val();
+    const name = $("#input-displayname").val();
+    const email = $("#input-email").val();
+    const password = $("#input-password").val();
+    const confirmPassword = $("#input-passwordconfirm").val();
     if (password !== confirmPassword){
         alert("Passwords are not equals!");
     }
     const account = {
-        login: name,
+        username: email,
         password: password,
-        email: email,
+        displayName: name,
         role: "USER",
         status: "ACTIVE"
     }

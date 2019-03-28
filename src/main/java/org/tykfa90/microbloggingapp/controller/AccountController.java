@@ -33,7 +33,7 @@ public class AccountController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewAccount(@RequestBody Account account) {
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+//        account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountService.saveAccount(account);
         LOG.info("Added new account");
     }
