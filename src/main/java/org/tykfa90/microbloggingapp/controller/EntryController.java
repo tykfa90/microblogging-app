@@ -1,6 +1,5 @@
 package org.tykfa90.microbloggingapp.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,17 +11,20 @@ import org.tykfa90.microbloggingapp.repository.EntryRepository;
 
 import java.util.logging.Logger;
 
-@Controller
-@RequestMapping(path = "/microblog/entries")
+@RestController
+@RequestMapping(path = "/entries")
 public class EntryController {
 
-    Logger LOG = Logger.getLogger(EntryController.class.getName());
+    private Logger LOG = Logger.getLogger(EntryController.class.getName());
 
-    @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
     private EntryRepository entryRepository;
+
+    public EntryController(AccountRepository accountRepository, EntryRepository entryRepository) {
+        this.accountRepository = accountRepository;
+        this.entryRepository = entryRepository;
+    }
 
     @GetMapping(path = "/all")
     @ResponseStatus(HttpStatus.OK)
