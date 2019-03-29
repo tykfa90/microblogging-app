@@ -3,8 +3,8 @@ $("#button-register").click(function () {
     const email = $("#input-email").val();
     const password = $("#input-password").val();
     const confirmPassword = $("#input-passwordconfirm").val();
-    if (password !== confirmPassword){
-        alert("Passwords are not equals!");
+    if (password !== confirmPassword) {
+        alert("Passwords do not match!");
     }
     const account = {
         username: email,
@@ -20,7 +20,25 @@ $("#button-register").click(function () {
         data: JSON.stringify(account),
         contentType: "application/json",
         success: function () {
+            window.location.href = "/login";
             console.log("Account created");
+        },
+        error: function () {
+            console.log("Error while creating account")
+        }
+    })
+});
+
+$("#button-logout").click(function () {
+    $.ajax({
+        method: "get",
+        url: "http://localhost:8080",
+        success: function () {
+            window.location.href = "/logout";
+            console.log("Logged out");
+        },
+        error: function () {
+            console.log("Error while logging out")
         }
     })
 });

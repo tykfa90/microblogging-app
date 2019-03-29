@@ -8,6 +8,7 @@ import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.repository.AccountRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class AccountService implements UserDetailsService {
@@ -35,5 +36,9 @@ public class AccountService implements UserDetailsService {
         } else {
             throw new EntityNotFoundException(errorMsg);
         }
+    }
+
+    public List<Account> findAllAccounts() {
+        return accountRepository.findAll();
     }
 }

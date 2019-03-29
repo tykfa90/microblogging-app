@@ -3,13 +3,13 @@ package org.tykfa90.microbloggingapp.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.repository.AccountRepository;
 import org.tykfa90.microbloggingapp.repository.EntryRepository;
 import org.tykfa90.microbloggingapp.service.AccountService;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -26,14 +26,14 @@ public class AccountController {
     }
 
     @GetMapping
-    public String showAccounts() {
-        return "łolaboga";
+    public List<Account> showAccounts() {
+        return accountService.findAllAccounts();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewAccount(@RequestBody Account account) {
-//        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         accountService.saveAccount(account);
         LOG.info("Added new account");
     }

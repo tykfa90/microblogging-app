@@ -3,12 +3,14 @@ package org.tykfa90.microbloggingapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 import org.tykfa90.microbloggingapp.dto.EntryDTO;
 import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.model.Entry;
 import org.tykfa90.microbloggingapp.repository.AccountRepository;
 import org.tykfa90.microbloggingapp.repository.EntryRepository;
 
+import java.security.Principal;
 import java.util.logging.Logger;
 
 @RestController
@@ -26,14 +28,14 @@ public class EntryController {
         this.entryRepository = entryRepository;
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Account> getAllEntries() {
+    public Iterable<Entry> getAllEntries() {
         LOG.info("Displaying all entries");
-        return accountRepository.findAll();
+        return entryRepository.findAll();
     }
 
-    @PostMapping(path = "/add")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewEntry(@RequestBody EntryDTO entryDto) {
         Entry entry = new Entry();
@@ -42,5 +44,16 @@ public class EntryController {
         entryRepository.save(entry);
 
         LOG.info("Added new entry");
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void removeEntry(@RequestBody Long entryId) {
+        if (entryRepository.findById(entryId).isPresent()) {
+            entryRepository.deleteById(entryId);
+            LOG.info("Removing entry with provided ID " + entryId);
+        } else {
+            LOG.info("Entry with ID: " + entryId + " not found!");
+        }
     }
 }
