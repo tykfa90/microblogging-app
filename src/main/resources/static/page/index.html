@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Microblog - HOME</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<!--Login view-->
+<div id="login-view" class="blog-element">
+    <form class="form-signin">
+        <h2>Please sign in</h2>
+        <div class="form-group">
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required
+                   autofocus>
+        </div>
+        <div class="form-group">
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
+        <button class="btn-block" id="button-login" type="button">Sign in</button>
+        <p>Nie masz konta? Załóż nowe konto za darmo!</p>
+        <button class="btn btn-lg btn-primary btn-block" id="button-redirect-register" type="button">Register account
+        </button>
+    </form>
+</div>
+<!--Register view TODO-->
+<div id="register-view" class="blog-element">
+    <form id="form-register" class="form-register">
+        <h2>Register account</h2>
+        <div class="form-group">
+            <label for="input-email" class="text-input">Enter email</label>
+            <input type="email" id="input-email" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="input-displayname" class="text-input">Enter display name</label>
+            <input type="text" id="input-displayname" class="form-control">
+        </div>
+        <div class="blog-element">
+            <div class="container">
+                <label for="input-password" class="password-field">Enter password</label>
+                <input type="password" id="input-password" class="form-control">
+
+                <label for="input-passwordconfirm" class="password-field">Retype password</label>
+                <input type="password" id="input-passwordconfirm" class="form-control">
+            </div>
+        </div>
+        <input class="btn btn-sm btn-block" id="button-register" type="button" value="Register">
+    </form>
+</div>
+<!--Main view TODO-->
+<div id="main-view" class="blog-element">
+    <p>Tutaj w przyszłości powstanie apka wyglądająca trochę jak poważny blog.</p>
+    <input class="btn btn-sm btn-primary btn-block" id="button-logout" type="button" value="Logout">
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package org.tykfa90.microbloggingapp.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,11 +11,13 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "accounts")
+@Where(clause = "status <> 'BLOCKED'")
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(updatable = false)
     private String username;
 
     private String password;

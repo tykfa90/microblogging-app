@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 import org.tykfa90.microbloggingapp.model.Entry;
 
 @Repository
-public interface EntryRepository extends JpaRepository<Entry, Long> {}
+public interface EntryRepository extends JpaRepository<Entry, Long> {
+    Iterable<Entry> findAllByAuthorId(Long id);
+}

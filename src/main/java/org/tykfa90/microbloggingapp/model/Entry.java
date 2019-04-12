@@ -11,13 +11,11 @@ public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @CreationTimestamp
     private LocalDateTime dateCreated;
-
     private String entryText;
-
-    private Long accountId;
+    @Column(updatable = false)
+    private Long authorId;
 
     public Long getId() {
         return id;
@@ -31,16 +29,8 @@ public class Entry {
         return entryText;
     }
 
-    public Long getAccount() {
-        return accountId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDateCreated(LocalDateTime dateCreated) {
-        this.dateCreated = dateCreated;
+    public Long getAuthorId() {
+        return authorId;
     }
 
     public void setEntryText(String entryText) {
@@ -48,6 +38,6 @@ public class Entry {
     }
 
     public void setAccountId(Long id) {
-        this.accountId = id;
+        this.authorId = id;
     }
 }
