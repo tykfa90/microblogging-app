@@ -3,9 +3,12 @@ package org.tykfa90.microbloggingapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.tykfa90.microbloggingapp.dto.EntryDTO;
+import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.model.Entry;
+import org.tykfa90.microbloggingapp.service.AccountService;
 import org.tykfa90.microbloggingapp.service.EntryService;
 
+import java.security.Principal;
 import java.util.logging.Logger;
 
 @RestController
@@ -15,9 +18,11 @@ public class EntryController {
     private Logger LOG = Logger.getLogger(EntryController.class.getName());
 
     private EntryService entryService;
+    private AccountService accountService;
 
-    public EntryController(EntryService entryService) {
+    public EntryController(EntryService entryService, AccountService accountService) {
         this.entryService = entryService;
+        this.accountService = accountService;
     }
 
     //All entries
@@ -39,9 +44,10 @@ public class EntryController {
     //Add entry
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNewEntry(@RequestBody EntryDTO entryDto) {
+    public void addNewEntry(@RequestBody EntryDTO entryDto, Principal principal) {
         Entry entry = new Entry();
-        entry.setAccountId(entryDto.getAccountId());
+        Long requestSenderAccounId = accountService.findByUsername(principal.getName()).getId();
+        entry.setAccountId(requestSenderAccounId);
         entry.setEntryText(entryDto.getEntryText());
         entryService.saveEntry(entry);
 
@@ -49,10 +55,25 @@ public class EntryController {
     }
 
     //Delete entry
-    @DeleteMapping
+    @DeleteMapping(path = "/{entryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void removeEntry(@RequestBody Long entryId) {
+    public void removeEntry(@PathVariable Long entryId) {
         entryService.deleteEntryById(entryId);
         LOG.info("Removing entry with provided ID " + entryId);
     }
+
+    //Update entry
+    @PatchMapping(path = "/{entryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateEntry(@PathVariable Long entryId, @RequestBody EntryDTO entryDTO, Principal principal) {
+        Long requestSenderAccountId = accountService.findByUsername(principal.getName()).getId();
+        Entry entryToUpdate = entryService.findEntryById(entryId);
+        Long authorId = entryToUpdate.getAuthorId();
+        if (authorId.equals(requestSenderAccountId)) {
+            entryToUpdate.setEntryText(entryDTO.getEntryText());
+            entryService.saveEntry(entryToUpdate);
+        }
+    }
+
+
 }
