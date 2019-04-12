@@ -6,6 +6,6 @@ import org.tykfa90.microbloggingapp.model.Comment;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    Iterable<Comment> findAllByAuthorId(Long accountId);
+    Iterable<Comment> findAllByAuthorUsername(String authorUserName);
     Iterable<Comment> findAllByParentEntryId(Long parentEntryId);
 }

@@ -19,10 +19,6 @@ public class EntryService {
         return entryRepository.findAll();
     }
 
-    public Iterable<Entry> findAllEntriesByAccountId(Long id) {
-        return entryRepository.findAllByAuthorId(id);
-    }
-
     public Entry findEntryById(Long entryId) {
         return entryRepository.findById(entryId)
                 .orElseThrow(()-> new IllegalArgumentException("No entry with this id found!"));
@@ -34,5 +30,9 @@ public class EntryService {
 
     public void deleteEntryById(Long entryId) {
         entryRepository.deleteById(entryId);
+    }
+
+    public Iterable<Entry> findAllEntriesByEntryAuthor(String entryAuthor) {
+        return entryRepository.findAllByEntryAuthor(entryAuthor);
     }
 }

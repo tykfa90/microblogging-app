@@ -15,7 +15,7 @@ public class Comment {
     @Column(updatable = false)
     private Long parentEntryId;
     @Column(updatable = false)
-    private Long authorId;
+    private String authorUsername;
     @CreationTimestamp
     private LocalDateTime dateCreated;
 
@@ -31,8 +31,8 @@ public class Comment {
         return parentEntryId;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public String getAuthorUsername() {
+        return authorUsername;
     }
 
     public LocalDateTime getDateCreated() {
@@ -47,7 +47,7 @@ public class Comment {
         this.parentEntryId = parentEntryId;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setAuthorUsername(String authorUsername) {
+        this.authorUsername = authorUsername;
     }
 }

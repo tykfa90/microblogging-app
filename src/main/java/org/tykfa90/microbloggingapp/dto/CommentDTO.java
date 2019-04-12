@@ -1,7 +1,7 @@
 package org.tykfa90.microbloggingapp.dto;
 
 public class CommentDTO {
-    private Long accountId;
+    private String authorUsername;
     private String commentText;
     private Long parentEntryId;
 
@@ -9,11 +9,13 @@ public class CommentDTO {
         return parentEntryId;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public String getAuthorUsername() {
+        return authorUsername;
     }
 
     public String getCommentText() {
         return commentText;
     }
+
+
 }

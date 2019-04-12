@@ -6,5 +6,6 @@ import org.tykfa90.microbloggingapp.model.Entry;
 
 @Repository
 public interface EntryRepository extends JpaRepository<Entry, Long> {
-    Iterable<Entry> findAllByAuthorId(Long id);
+
+    Iterable<Entry> findAllByEntryAuthor(String entryAuthor);
 }

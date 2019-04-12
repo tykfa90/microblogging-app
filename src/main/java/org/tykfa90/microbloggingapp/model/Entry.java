@@ -15,7 +15,7 @@ public class Entry {
     private LocalDateTime dateCreated;
     private String entryText;
     @Column(updatable = false)
-    private Long authorId;
+    private String entryAuthor;
 
     public Long getId() {
         return id;
@@ -29,15 +29,15 @@ public class Entry {
         return entryText;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public String getEntryAuthor() {
+        return entryAuthor;
     }
 
     public void setEntryText(String entryText) {
         this.entryText = entryText;
     }
 
-    public void setAccountId(Long id) {
-        this.authorId = id;
+    public void setEntryAuthor(String entryAuthor) {
+        this.entryAuthor = entryAuthor;
     }
 }

@@ -32,12 +32,12 @@ public class EntryController {
         return entryService.findAllEntries();
     }
 
-    //Entries by account id
-    @GetMapping(path = "/{accountId}")
+    //Entries by entryAuthor
+    @GetMapping(path = "/{entryAuthor}")
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Entry> getAllEntriesByAccountId(@PathVariable Long accountId) {
-        LOG.info("Displaying all entries created by user with id: " + accountId);
-        return entryService.findAllEntriesByAccountId(accountId);
+    public Iterable<Entry> getAllEntriesByEntryAuthor(@PathVariable String entryAuthor) {
+        LOG.info("Displaying all entries created by user with id: " + entryAuthor);
+        return entryService.findAllEntriesByEntryAuthor(entryAuthor);
     }
 
     //Add entry
@@ -45,8 +45,8 @@ public class EntryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewEntry(@RequestBody EntryDTO entryDto, Principal principal) {
         Entry entry = new Entry();
-        Long requestSenderAccountId = accountService.findByUsername(principal.getName()).getId();
-        entry.setAccountId(requestSenderAccountId);
+        String requestSenderAccountName = principal.getName();
+        entry.setEntryAuthor(requestSenderAccountName);
         entry.setEntryText(entryDto.getEntryText());
         entryService.saveEntry(entry);
         LOG.info("Added new entry");
@@ -56,9 +56,9 @@ public class EntryController {
     @DeleteMapping(path = "/{entryId}")
     @ResponseStatus(HttpStatus.OK)
     public void removeEntry(@PathVariable Long entryId, Principal principal) {
-        Long requestSenderAccountId = entryService.findEntryById(entryId).getAuthorId();
-        Long entryToDeleteAuthorId = accountService.findByUsername(principal.getName()).getId();
-        if (requestSenderAccountId.equals(entryToDeleteAuthorId)) {
+        String requestSenderAccountName = entryService.findEntryById(entryId).getEntryAuthor();
+        String entryToDeleteAuthor = principal.getName();
+        if (requestSenderAccountName.equals(entryToDeleteAuthor)) {
             entryService.deleteEntryById(entryId);
             LOG.info("Removing entry with provided ID " + entryId);
         } //TODO error handlng and delegation
@@ -68,10 +68,10 @@ public class EntryController {
     @PatchMapping(path = "/{entryId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateEntry(@PathVariable Long entryId, @RequestBody EntryDTO entryDTO, Principal principal) {
-        Long requestSenderAccountId = accountService.findByUsername(principal.getName()).getId();
+        String requestSenderAccountName = principal.getName();
         Entry entryToUpdate = entryService.findEntryById(entryId);
-        Long authorId = entryToUpdate.getAuthorId();
-        if (requestSenderAccountId.equals(authorId)) {
+        String entryToUpdateAuthor = entryToUpdate.getEntryAuthor();
+        if (requestSenderAccountName.equals(entryToUpdateAuthor)) {
             entryToUpdate.setEntryText(entryDTO.getEntryText());
             entryService.saveEntry(entryToUpdate);
             LOG.info("Updating entry with id: " + entryId);

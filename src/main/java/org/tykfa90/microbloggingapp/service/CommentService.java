@@ -16,8 +16,8 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public Iterable<Comment> getAllCommentsByAccountId(Long accountId) {
-        return commentRepository.findAllByAuthorId(accountId);
+    public Iterable<Comment> getAllCommentsByAuthor(String authorUsername) {
+        return commentRepository.findAllByAuthorUsername(authorUsername);
     }
 
     public Iterable<Comment> getAllCommentsByParentEntry(Long parentEntryId) {

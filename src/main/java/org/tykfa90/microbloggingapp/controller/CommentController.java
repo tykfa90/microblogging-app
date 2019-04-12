@@ -40,9 +40,9 @@ public class CommentController {
     //All comments by author
     @GetMapping(path = "/author/{accountId}")
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Comment> getAllCommentsByAuthor(@PathVariable Long accountId) {
-        LOG.info("Displaying all comments created by user with id: " + accountId);
-        return commentService.getAllCommentsByAccountId(accountId);
+    public Iterable<Comment> getAllCommentsByAuthor(@PathVariable String authorUsername) {
+        LOG.info("Displaying all comments created by user with id: " + authorUsername);
+        return commentService.getAllCommentsByAuthor(authorUsername);
     }
 
     //All comments by parent entry
@@ -58,22 +58,22 @@ public class CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody CommentDTO commentDTO) {
         Comment comment = new Comment();
-        comment.setAuthorId(commentDTO.getAccountId());
+        comment.setAuthorUsername(commentDTO.getAuthorUsername());
         comment.setParentEntryId(commentDTO.getParentEntryId());
         comment.setText(commentDTO.getCommentText());
         commentService.saveComment(comment);
         LOG.info("Adding new comment");
     }
 
-    //Remove comment by commentId - available for both comment AND entry author
+    //Remove comment by commentId - available for both comment AND parent entry author
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void removeComment(@RequestBody Long commentId, Principal principal) {
-        Long sessionUserAccountId = accountService.findByUsername(principal.getName()).getId();
-        Long commentAuthorUserId = getByCommentId(commentId).getAuthorId();
-        Long entryAuthorUserId = entryService.findEntryById(getByCommentId(commentId).getParentEntryId()).getAuthorId();
+        String requestSenderAccountName = principal.getName();
+        String commentAuthorAccountName = getByCommentId(commentId).getAuthorUsername();
+        String entryAuthorAccountName = entryService.findEntryById(getByCommentId(commentId).getParentEntryId()).getEntryAuthor();
 
-        if (sessionUserAccountId.equals(commentAuthorUserId) || sessionUserAccountId.equals(entryAuthorUserId)) {
+        if (requestSenderAccountName.equals(commentAuthorAccountName) || requestSenderAccountName.equals(entryAuthorAccountName)) {
             commentService.removeByCommentId(commentId);
             LOG.info("Deleting comment with id: " + commentId);
         } else {
@@ -81,6 +81,7 @@ public class CommentController {
         }
     }
 
+    //Get comment by id
     private Comment getByCommentId(@RequestBody Long commentId) {
         return commentService.findByCommentId(commentId);
     }
