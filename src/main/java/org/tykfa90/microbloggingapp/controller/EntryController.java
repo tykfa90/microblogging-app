@@ -3,7 +3,6 @@ package org.tykfa90.microbloggingapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.tykfa90.microbloggingapp.dto.EntryDTO;
-import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.model.Entry;
 import org.tykfa90.microbloggingapp.service.AccountService;
 import org.tykfa90.microbloggingapp.service.EntryService;
@@ -46,20 +45,23 @@ public class EntryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewEntry(@RequestBody EntryDTO entryDto, Principal principal) {
         Entry entry = new Entry();
-        Long requestSenderAccounId = accountService.findByUsername(principal.getName()).getId();
-        entry.setAccountId(requestSenderAccounId);
+        Long requestSenderAccountId = accountService.findByUsername(principal.getName()).getId();
+        entry.setAccountId(requestSenderAccountId);
         entry.setEntryText(entryDto.getEntryText());
         entryService.saveEntry(entry);
-
         LOG.info("Added new entry");
     }
 
     //Delete entry
     @DeleteMapping(path = "/{entryId}")
     @ResponseStatus(HttpStatus.OK)
-    public void removeEntry(@PathVariable Long entryId) {
-        entryService.deleteEntryById(entryId);
-        LOG.info("Removing entry with provided ID " + entryId);
+    public void removeEntry(@PathVariable Long entryId, Principal principal) {
+        Long requestSenderAccountId = entryService.findEntryById(entryId).getAuthorId();
+        Long entryToDeleteAuthorId = accountService.findByUsername(principal.getName()).getId();
+        if (requestSenderAccountId.equals(entryToDeleteAuthorId)) {
+            entryService.deleteEntryById(entryId);
+            LOG.info("Removing entry with provided ID " + entryId);
+        } //TODO error handlng and delegation
     }
 
     //Update entry
@@ -69,11 +71,10 @@ public class EntryController {
         Long requestSenderAccountId = accountService.findByUsername(principal.getName()).getId();
         Entry entryToUpdate = entryService.findEntryById(entryId);
         Long authorId = entryToUpdate.getAuthorId();
-        if (authorId.equals(requestSenderAccountId)) {
+        if (requestSenderAccountId.equals(authorId)) {
             entryToUpdate.setEntryText(entryDTO.getEntryText());
             entryService.saveEntry(entryToUpdate);
-        }
+            LOG.info("Updating entry with id: " + entryId);
+        } //TODO error handling and delegation
     }
-
-
 }
