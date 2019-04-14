@@ -3,10 +3,7 @@ package org.tykfa90.microbloggingapp.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.tykfa90.microbloggingapp.dto.CommentDTO;
-import org.tykfa90.microbloggingapp.model.Account;
 import org.tykfa90.microbloggingapp.model.Comment;
-import org.tykfa90.microbloggingapp.model.Entry;
-import org.tykfa90.microbloggingapp.service.AccountService;
 import org.tykfa90.microbloggingapp.service.CommentService;
 import org.tykfa90.microbloggingapp.service.EntryService;
 
@@ -20,12 +17,10 @@ public class CommentController {
     private Logger LOG = Logger.getLogger(CommentController.class.getName());
 
     private CommentService commentService;
-    private AccountService accountService;
     private EntryService entryService;
 
-    public CommentController(CommentService commentService, AccountService accountService, EntryService entryService) {
+    public CommentController(CommentService commentService, EntryService entryService) {
         this.commentService = commentService;
-        this.accountService = accountService;
         this.entryService = entryService;
     }
 
@@ -38,7 +33,7 @@ public class CommentController {
     }
 
     //All comments by author
-    @GetMapping(path = "/author/{accountId}")
+    @GetMapping(path = "/author/{authorUsername:.+}")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Comment> getAllCommentsByAuthor(@PathVariable String authorUsername) {
         LOG.info("Displaying all comments created by user with id: " + authorUsername);
@@ -56,9 +51,9 @@ public class CommentController {
     //Add comment
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addComment(@RequestBody CommentDTO commentDTO) {
+    public void addComment(@RequestBody CommentDTO commentDTO, Principal principal) {
         Comment comment = new Comment();
-        comment.setAuthorUsername(commentDTO.getAuthorUsername());
+        comment.setAuthorUsername(principal.getName());
         comment.setParentEntryId(commentDTO.getParentEntryId());
         comment.setText(commentDTO.getCommentText());
         commentService.saveComment(comment);
@@ -66,10 +61,10 @@ public class CommentController {
     }
 
     //Remove comment by commentId - available for both comment AND parent entry author
-    @DeleteMapping
+    @DeleteMapping(path = "/{commentId}")
     @ResponseStatus(HttpStatus.OK)
-    public void removeComment(@RequestBody Long commentId, Principal principal) {
-        String requestSenderAccountName = principal.getName();
+    public void removeComment(@PathVariable Long commentId, Principal principal) {
+        String requestSenderAccountName = getSessionUsernameFromPrincipal(principal);
         String commentAuthorAccountName = getByCommentId(commentId).getAuthorUsername();
         String entryAuthorAccountName = entryService.findEntryById(getByCommentId(commentId).getParentEntryId()).getEntryAuthor();
 
@@ -81,8 +76,27 @@ public class CommentController {
         }
     }
 
-    //Get comment by id
+
+    @PatchMapping(path = "/{commentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateComment(@PathVariable Long commentId, @RequestBody CommentDTO commentDTO, Principal principal) {
+        String requestSenderAccountName = getSessionUsernameFromPrincipal(principal);
+        String commentAuthorAccountName = getByCommentId(commentId).getAuthorUsername();
+        if (requestSenderAccountName.equals(commentAuthorAccountName)) {
+            Comment commentToUpdate = getByCommentId(commentId);
+            commentToUpdate.setText(commentDTO.getCommentText());
+            commentService.saveComment(commentToUpdate);
+            LOG.info("Updating comment with id: " + commentId);
+        }
+    }
+
+    //Supporting, reusable method for acquiring a comment by it's Id from repository
     private Comment getByCommentId(@RequestBody Long commentId) {
         return commentService.findByCommentId(commentId);
+    }
+
+    //Supporting method for acquiring username from active session
+    private String getSessionUsernameFromPrincipal(Principal principal) {
+        return principal.getName();
     }
 }
