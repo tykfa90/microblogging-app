@@ -33,7 +33,7 @@ public class EntryController {
     }
 
     //Entries by entryAuthor
-    @GetMapping(path = "/{entryAuthor}")
+    @GetMapping(path = "/{entryAuthor:.+}")
     @ResponseStatus(HttpStatus.OK)
     public Iterable<Entry> getAllEntriesByEntryAuthor(@PathVariable String entryAuthor) {
         LOG.info("Displaying all entries created by user with id: " + entryAuthor);
@@ -56,8 +56,8 @@ public class EntryController {
     @DeleteMapping(path = "/{entryId}")
     @ResponseStatus(HttpStatus.OK)
     public void removeEntry(@PathVariable Long entryId, Principal principal) {
-        String requestSenderAccountName = entryService.findEntryById(entryId).getEntryAuthor();
-        String entryToDeleteAuthor = principal.getName();
+        String requestSenderAccountName = principal.getName();
+        String entryToDeleteAuthor = entryService.findEntryById(entryId).getEntryAuthor();
         if (requestSenderAccountName.equals(entryToDeleteAuthor)) {
             entryService.deleteEntryById(entryId);
             LOG.info("Removing entry with provided ID " + entryId);
